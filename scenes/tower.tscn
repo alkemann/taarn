@@ -1,0 +1,59 @@
+[gd_scene load_steps=8 format=3 uid="uid://5qajarlrtfmq"]
+
+[ext_resource type="Script" path="res://scripts/tower.gd" id="1_50bcd"]
+[ext_resource type="Texture2D" uid="uid://da24fux5f6uu7" path="res://graphics/blue_square.png" id="2_ic8bf"]
+[ext_resource type="Texture2D" uid="uid://cc1otxojvviqe" path="res://graphics/lich.png" id="2_t1ain"]
+[ext_resource type="Texture2D" uid="uid://cldvp4nroot8l" path="res://graphics/aim.png" id="3_mc48p"]
+[ext_resource type="Texture2D" uid="uid://chikk80s4gpjd" path="res://graphics/green_bar.png" id="4_n7ae7"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_m76n6"]
+radius = 78.0927
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ago3u"]
+size = Vector2(32, 32)
+
+[node name="Tower" type="Node2D"]
+script = ExtResource("1_50bcd")
+
+[node name="Back" type="Sprite2D" parent="."]
+modulate = Color(0, 0.858824, 0.435294, 1)
+texture = ExtResource("2_ic8bf")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_t1ain")
+
+[node name="Agro" type="Area2D" parent="."]
+scale = Vector2(1.4, 1.4)
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Agro"]
+visible = false
+shape = SubResource("CircleShape2D_m76n6")
+
+[node name="Select" type="Area2D" parent="."]
+collision_layer = 32768
+collision_mask = 32768
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Select"]
+light_mask = 16
+visibility_layer = 16
+shape = SubResource("RectangleShape2D_ago3u")
+
+[node name="Aim" type="Node2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="Aim"]
+modulate = Color(1, 1, 1, 0.317647)
+position = Vector2(55, -1.19209e-07)
+scale = Vector2(1.65625, 0.25)
+texture = ExtResource("3_mc48p")
+
+[node name="Reload" type="Node2D" parent="."]
+position = Vector2(15, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="Reload"]
+texture = ExtResource("4_n7ae7")
+
+[connection signal="area_entered" from="Agro" to="." method="_on_mob_entered"]
+[connection signal="area_exited" from="Agro" to="." method="_on_mob_exited"]
+[connection signal="mouse_entered" from="Select" to="." method="_on_select_mouse_entered"]
+[connection signal="mouse_exited" from="Select" to="." method="_on_select_mouse_exited"]

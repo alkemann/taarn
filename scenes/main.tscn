@@ -1,0 +1,162 @@
+[gd_scene load_steps=5 format=3 uid="uid://ca6djxhe6tkvg"]
+
+[ext_resource type="Script" path="res://scripts/game.gd" id="1_bal31"]
+[ext_resource type="Texture2D" uid="uid://da24fux5f6uu7" path="res://graphics/blue_square.png" id="2_0fj3i"]
+
+[sub_resource type="GDScript" id="GDScript_y2c1x"]
+resource_name = "path_preview"
+script/source = "extends Line2D
+
+@onready var path_node : Path2D = $\"../Path2D\"
+
+
+func _ready():
+	reset()
+
+
+func reset():
+	assert(path_node, \"Must find the Path2D node\")
+	self.clear_points()
+	var path_points = path_node.get_curve().get_baked_points()
+	for p in path_points:
+		self.add_point(p)
+"
+
+[sub_resource type="Curve2D" id="Curve2D_ysprt"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, -24, 160, 0, 0, 0, 0, 64, 160, 0, 0, 0, 0, 704, 448, 0, 0, 0, 0, 736, 448)
+}
+point_count = 4
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_bal31")
+
+[node name="Graphics" type="Node" parent="."]
+
+[node name="Protect" type="Sprite2D" parent="Graphics"]
+modulate = Color(0.611765, 0, 0.227451, 1)
+position = Vector2(736, 448)
+texture = ExtResource("2_0fj3i")
+
+[node name="EndSquare" type="Sprite2D" parent="Graphics"]
+modulate = Color(1, 0.00784314, 0.878431, 1)
+position = Vector2(704, 448)
+texture = ExtResource("2_0fj3i")
+
+[node name="StartSquare" type="Sprite2D" parent="Graphics"]
+modulate = Color(1, 0.00784314, 0.878431, 1)
+position = Vector2(64, 160)
+texture = ExtResource("2_0fj3i")
+
+[node name="Towers" type="Node" parent="."]
+
+[node name="Monsters" type="Node" parent="."]
+
+[node name="PathPreview" type="Line2D" parent="Monsters"]
+width = 2.0
+default_color = Color(1, 0, 0.0941176, 1)
+script = SubResource("GDScript_y2c1x")
+metadata/_edit_group_ = true
+
+[node name="Path2D" type="Path2D" parent="Monsters"]
+curve = SubResource("Curve2D_ysprt")
+metadata/_edit_group_ = true
+
+[node name="Start" type="Node2D" parent="Monsters"]
+
+[node name="UI" type="Node" parent="."]
+
+[node name="Control" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_lock_ = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Control"]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -400.0
+offset_top = 7.0
+offset_right = 398.0
+offset_bottom = 36.0
+grow_horizontal = 2
+
+[node name="Control" type="Control" parent="UI/Control/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label Lives" type="Label" parent="UI/Control/HBoxContainer/Control"]
+layout_mode = 0
+offset_left = 488.0
+offset_top = 3.0
+offset_right = 549.0
+offset_bottom = 29.0
+text = "Lives: "
+metadata/_edit_use_anchors_ = true
+
+[node name="Lives" type="Label" parent="UI/Control/HBoxContainer/Control"]
+layout_mode = 0
+offset_left = 546.0
+offset_top = 3.0
+offset_right = 586.0
+offset_bottom = 29.0
+text = "3"
+metadata/_edit_use_anchors_ = true
+
+[node name="Control3" type="Control" parent="UI/Control/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label Alive" type="Label" parent="UI/Control/HBoxContainer/Control3"]
+layout_mode = 2
+offset_left = 364.0
+offset_top = 3.0
+offset_right = 425.0
+offset_bottom = 29.0
+text = "Alive: "
+metadata/_edit_use_anchors_ = true
+
+[node name="Alive" type="Label" parent="UI/Control/HBoxContainer/Control3"]
+layout_mode = 0
+offset_left = 418.0
+offset_top = 3.0
+offset_right = 458.0
+offset_bottom = 29.0
+text = "0"
+metadata/_edit_use_anchors_ = true
+
+[node name="Control4" type="Control" parent="UI/Control/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label Score" type="Label" parent="UI/Control/HBoxContainer/Control4"]
+layout_mode = 0
+offset_left = 617.0
+offset_top = 3.0
+offset_right = 678.0
+offset_bottom = 29.0
+text = "Score: "
+metadata/_edit_use_anchors_ = true
+
+[node name="Score" type="Label" parent="UI/Control/HBoxContainer/Control4"]
+layout_mode = 0
+offset_left = 675.0
+offset_top = 4.0
+offset_right = 715.0
+offset_bottom = 30.0
+text = "0"
+metadata/_edit_use_anchors_ = true
+
+[node name="StateControl" type="Control" parent="UI/Control/HBoxContainer"]
+layout_mode = 2
+
+[node name="State" type="Label" parent="UI/Control/HBoxContainer/StateControl"]
+layout_mode = 0
+offset_left = 68.0
+offset_top = 4.0
+offset_right = 145.0
+offset_bottom = 30.0
+text = "BUILDING"

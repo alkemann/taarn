@@ -1,0 +1,45 @@
+[gd_scene load_steps=2 format=3 uid="uid://b10s3d36o6r5n"]
+
+[ext_resource type="Script" path="res://scripts/top_menu.gd" id="1_dn8ci"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TopMenu" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_dn8ci")
+
+[node name="ContinueButton" type="Button" parent="TopMenu"]
+layout_mode = 2
+disabled = true
+text = "Continue"
+
+[node name="StartButton" type="Button" parent="TopMenu"]
+layout_mode = 2
+text = "Start"
+
+[node name="OptionsButton" type="Button" parent="TopMenu"]
+layout_mode = 2
+disabled = true
+text = "Options
+"
+
+[node name="QuitButton" type="Button" parent="TopMenu"]
+layout_mode = 2
+text = "Quit
+"
+
+[connection signal="pressed" from="TopMenu/StartButton" to="TopMenu" method="_on_start_button_pressed"]
+[connection signal="pressed" from="TopMenu/QuitButton" to="TopMenu" method="_on_quit_button_pressed"]

@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3 uid="uid://b2h22choyljou"]
+
+[ext_resource type="Script" path="res://scripts/mob.gd" id="1_pb5df"]
+[ext_resource type="Texture2D" uid="uid://8cu0os7gfjs1" path="res://graphics/gnome.png" id="1_srj6l"]
+[ext_resource type="Texture2D" uid="uid://buqk0jiwhy1sx" path="res://graphics/red_bar.png" id="3_70yel"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_lt3di"]
+radius = 7.0
+
+[node name="Mob" type="PathFollow2D"]
+rotates = false
+loop = false
+script = ExtResource("1_pb5df")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -2)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_srj6l")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(0, -1)
+shape = SubResource("CircleShape2D_lt3di")
+
+[node name="Health" type="Node2D" parent="."]
+position = Vector2(-7, -10)
+rotation = 1.5708
+
+[node name="Sprite2D" type="Sprite2D" parent="Health"]
+position = Vector2(-2.47955e-05, -7)
+scale = Vector2(0.585, 0.44)
+texture = ExtResource("3_70yel")
+
+[connection signal="Hit" from="." to="." method="_on_hit"]
