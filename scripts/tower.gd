@@ -13,11 +13,10 @@ const States = Utils.States
 const PROHIBITED : Array[Vector2i] = [Vector2i(0, 3), Vector2i(20, 12)]
 
 @onready var game: Game = get_node("/root/Game")
-@onready var viewport_size = get_viewport().size
-@onready var min_y = GRID_SIZE*2
-@onready var min_x = GRID_SIZE*2
-@onready var max_x = viewport_size.x - (GRID_SIZE * 3)
-@onready var max_y = viewport_size.y - (GRID_SIZE * 3)
+@onready var min_y = game.min_y
+@onready var min_x = game.min_x
+@onready var max_y = game.max_y
+@onready var max_x = game.max_x
 
 var enemies = []
 var current_enemy : Mob
@@ -37,8 +36,9 @@ func _process(delta):
 	if since_lost_shot >= DELAY and enemies.size():
 		enemies.sort_custom(sort_enemies)
 		current_enemy = enemies[0]
-		current_enemy.Hit.emit(DAMAGE)
-		since_lost_shot = 0.0
+		if current_enemy.has_entered:
+			current_enemy.Hit.emit(DAMAGE)
+			since_lost_shot = 0.0
 
 	if current_enemy:
 		$Aim.visible = true
@@ -82,19 +82,6 @@ func _on_mob_entered(area2d: Area2D):
 		mob.Killed.connect(_on_mob_killed)
 
 
-func _viewport_to_grid(vp: Vector2) -> Vector2i:
-	var grid_x = round(vp.x / GRID_SIZE) - 2
-	var grid_y = round(vp.y / GRID_SIZE) - 2
-	return Vector2i(grid_x, grid_y)
-
-
-func _grid_to_viewport(grid_pos: Vector2i) -> Vector2:
-	var x = grid_pos.x * GRID_SIZE
-	var y = grid_pos.y * GRID_SIZE
-	x = clamp(x, min_x, max_x)
-	y = clamp(y, min_y, max_y)
-	return Vector2(x, y)
-
 
 func _on_mob_killed(_mob: Mob):
 	print("Mob killed")
@@ -122,7 +109,7 @@ func _on_input_event(_viewport:Node, event:InputEvent, _shape_idx:int):
 
 func is_placement_prohibited() -> bool:
 	# assert(not self.selected, "Only useable when selected")
-	var gridpos = _viewport_to_grid(self.position)
+	var gridpos = game.viewport_to_grid(self.position)
 	var prohibted = PROHIBITED.has(gridpos)
 	if prohibted:
 		print("PROBITED " + str(gridpos))

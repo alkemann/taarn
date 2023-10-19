@@ -3,11 +3,11 @@ extends Node2D
 
 @export var SPAWN_DELAY = 0.3
 
-const GRID_SIZE = 32
 const gnome = preload("res://scenes/mob.tscn")
 const tower_1 = preload("res://scenes/tower.tscn")
 const Utils = preload("res://scripts/utils.gd")
 const States = Utils.States
+const GRID_SIZE = Utils.GRID_SIZE
 
 @onready var path = $Monsters/Path2D
 @onready var ui_lives = $UI/Control/HBoxContainer/Control/Lives
@@ -23,9 +23,9 @@ const States = Utils.States
 
 
 var _state: States = States.BUILDING
-var monsters = []
-var monster_count = 20
-var since_spawn = SPAWN_DELAY
+var _monsters_to_spawn = 10
+var _monster_count = 10
+var _since_spawn = SPAWN_DELAY
 var wave = 1
 var alive = 0
 var lives = 3
@@ -35,10 +35,6 @@ var selected_tower:Tower = null
 
 func state() -> States:
 	return _state
-
-
-func can_build() -> bool:
-	return state() == States.BUILDING
 
 
 func _process(delta):
@@ -82,22 +78,23 @@ func _handle_next_wave():
 		if selected_tower:
 			selected_tower.queue_free()
 			selected_tower = null
+		$Monsters/Path2D.calculate_path()
 		_state = States.SPAWNING
 		ui_state.text = "WAVE " + str(wave) + " ATTACKING"
 
 
 func _handle_wave_spawning(delta):
-	since_spawn += delta
-	if monster_count > 0 and since_spawn >= SPAWN_DELAY:
+	_since_spawn += delta
+	if _monster_count > 0 and _since_spawn >= SPAWN_DELAY:
 		var new_mob = gnome.instantiate()
 		new_mob.Survived.connect(monster_survived)
 		new_mob.Killed.connect(monster_killed)
 		path.add_child(new_mob)
-		monster_count -= 1
-		since_spawn = 0
+		_monster_count -= 1
+		_since_spawn = 0
 		alive += 1
 		ui_alive.text = str(alive)
-	elif monster_count == 0:
+	elif _monster_count == 0:
 		_state = States.CLEANUP
 		ui_state.text = "CLEANUP"
 
@@ -105,8 +102,9 @@ func _handle_wave_spawning(delta):
 func _clean_up_board():
 	wave += 1
 	alive = 0
-	since_spawn = SPAWN_DELAY
-	monster_count = 20
+	_since_spawn = SPAWN_DELAY
+	_monsters_to_spawn += 5
+	_monster_count = _monsters_to_spawn
 	_state = States.BUILDING
 	ui_state.text = "BUILDING"
 
@@ -130,8 +128,21 @@ func _draw():
 		draw_line(Vector2(min_x - half, y), Vector2(max_x + half, y), color)
 
 
-func monster_killed():
+func monster_killed(_mob: Mob):
 	alive -= 1
 	score += 1
 	ui_alive.text = str(alive)
 	ui_score.text = str(score)
+
+func viewport_to_grid(vp: Vector2) -> Vector2i:
+	var grid_x = round(vp.x / GRID_SIZE) - 2
+	var grid_y = round(vp.y / GRID_SIZE) - 2
+	return Vector2i(grid_x, grid_y)
+
+
+func grid_to_viewport(grid_pos: Vector2i) -> Vector2:
+	var x = grid_pos.x * GRID_SIZE
+	var y = grid_pos.y * GRID_SIZE
+	x = clamp(x, min_x, max_x)
+	y = clamp(y, min_y, max_y)
+	return Vector2(x, y)

@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://ca6djxhe6tkvg"]
+[gd_scene load_steps=6 format=3 uid="uid://ca6djxhe6tkvg"]
 
 [ext_resource type="Script" path="res://scripts/game.gd" id="1_bal31"]
 [ext_resource type="Texture2D" uid="uid://da24fux5f6uu7" path="res://graphics/blue_square.png" id="2_0fj3i"]
+[ext_resource type="Script" path="res://scripts/path.gd" id="3_mswcb"]
 
 [sub_resource type="GDScript" id="GDScript_y2c1x"]
 resource_name = "path_preview"
@@ -24,7 +25,7 @@ func reset():
 
 [sub_resource type="Curve2D" id="Curve2D_ysprt"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, -24, 160, 0, 0, 0, 0, 64, 160, 0, 0, 0, 0, 704, 448, 0, 0, 0, 0, 736, 448)
+"points": PackedVector2Array(0, 0, 0, 0, -32, 160, 0, 0, 0, 0, 64, 160, 0, 0, 0, 0, 704, 448, 0, 0, 0, 0, 736, 448)
 }
 point_count = 4
 
@@ -60,6 +61,7 @@ metadata/_edit_group_ = true
 
 [node name="Path2D" type="Path2D" parent="Monsters"]
 curve = SubResource("Curve2D_ysprt")
+script = ExtResource("3_mswcb")
 metadata/_edit_group_ = true
 
 [node name="Start" type="Node2D" parent="Monsters"]
