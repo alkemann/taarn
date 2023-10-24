@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://ca6djxhe6tkvg"]
+[gd_scene load_steps=7 format=3 uid="uid://ca6djxhe6tkvg"]
 
 [ext_resource type="Script" path="res://scripts/game.gd" id="1_bal31"]
-[ext_resource type="Texture2D" uid="uid://da24fux5f6uu7" path="res://graphics/blue_square.png" id="2_0fj3i"]
+[ext_resource type="Texture2D" uid="uid://ber081vp0a5nn" path="res://graphics/blue_square.png" id="2_0fj3i"]
+[ext_resource type="Script" path="res://scripts/combat_manager.gd" id="2_hb511"]
 [ext_resource type="Script" path="res://scripts/path.gd" id="3_mswcb"]
 
 [sub_resource type="GDScript" id="GDScript_y2c1x"]
@@ -31,6 +32,9 @@ point_count = 4
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_bal31")
+
+[node name="CombatManager" type="Node" parent="."]
+script = ExtResource("2_hb511")
 
 [node name="Graphics" type="Node" parent="."]
 
@@ -162,3 +166,5 @@ offset_top = 4.0
 offset_right = 145.0
 offset_bottom = 30.0
 text = "BUILDING"
+
+[connection signal="Attack" from="CombatManager" to="CombatManager" method="_on_attack"]

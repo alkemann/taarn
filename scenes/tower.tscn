@@ -1,10 +1,10 @@
 [gd_scene load_steps=8 format=3 uid="uid://5qajarlrtfmq"]
 
 [ext_resource type="Script" path="res://scripts/tower.gd" id="1_50bcd"]
-[ext_resource type="Texture2D" uid="uid://da24fux5f6uu7" path="res://graphics/blue_square.png" id="2_ic8bf"]
-[ext_resource type="Texture2D" uid="uid://cc1otxojvviqe" path="res://graphics/lich.png" id="2_t1ain"]
-[ext_resource type="Texture2D" uid="uid://cldvp4nroot8l" path="res://graphics/aim.png" id="3_mc48p"]
-[ext_resource type="Texture2D" uid="uid://chikk80s4gpjd" path="res://graphics/green_bar.png" id="4_n7ae7"]
+[ext_resource type="Texture2D" uid="uid://ber081vp0a5nn" path="res://graphics/blue_square.png" id="2_ic8bf"]
+[ext_resource type="Texture2D" uid="uid://bw02xy5lb7anu" path="res://graphics/lich.png" id="2_t1ain"]
+[ext_resource type="Texture2D" uid="uid://cbslqem8dsc6p" path="res://graphics/aim.png" id="3_mc48p"]
+[ext_resource type="Texture2D" uid="uid://uen1ep1jeh1o" path="res://graphics/green_bar.png" id="4_n7ae7"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_m76n6"]
 radius = 78.0927

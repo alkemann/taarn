@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://b2h22choyljou"]
 
 [ext_resource type="Script" path="res://scripts/mob.gd" id="1_pb5df"]
-[ext_resource type="Texture2D" uid="uid://8cu0os7gfjs1" path="res://graphics/gnome.png" id="1_srj6l"]
-[ext_resource type="Texture2D" uid="uid://buqk0jiwhy1sx" path="res://graphics/red_bar.png" id="3_70yel"]
+[ext_resource type="Texture2D" uid="uid://celmjiax31uhe" path="res://graphics/gnome.png" id="1_srj6l"]
+[ext_resource type="Texture2D" uid="uid://pr5lxjgos5vi" path="res://graphics/red_bar.png" id="3_70yel"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_lt3di"]
 radius = 7.0
@@ -31,5 +31,3 @@ rotation = 1.5708
 position = Vector2(-2.47955e-05, -7)
 scale = Vector2(0.585, 0.44)
 texture = ExtResource("3_70yel")
-
-[connection signal="Hit" from="." to="." method="_on_hit"]
