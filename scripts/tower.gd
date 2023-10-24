@@ -1,6 +1,12 @@
 class_name Tower
 extends Node2D
 
+const Utils = preload("res://scripts/utils.gd")
+const Combat = preload("res://scripts/combat.gd")
+
+
+signal Attacked(cb: Combat.CombatPackage)
+signal Hit(cb: Compat.CombatPackage)  # different object, combat results?
 signal Picked(tower:Tower, coords: Vector2i)
 signal Placed(tower:Tower, coords: Vector2i)
 
@@ -8,7 +14,6 @@ signal Placed(tower:Tower, coords: Vector2i)
 @export var DELAY = 0.5
 @export var GRID_SIZE = 32
 
-const Utils = preload("res://scripts/utils.gd")
 const States = Utils.States
 
 @onready var game: Game = get_node("/root/Game")
