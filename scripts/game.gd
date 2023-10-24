@@ -37,13 +37,13 @@ var selected_tower:Tower = null
 
 func _ready() -> void:
 	self._map = []
-	for x in range(0, 15):
-		if not _map[x]:
-			_map.append([])
-		for y in range(0, 20):
-			_map[x].append(false)
-	_map[0][3] = true
-	_map[20][12] = true
+	_map.resize(21)
+	for x in range(0, 21):
+		_map[x] = []
+		_map[x].resize(12)
+		_map[x].fill(false)
+#	_map[0][3] = true
+#	_map[20][12] = true
 
 
 func is_grid_free(g:Vector2i) -> bool:
