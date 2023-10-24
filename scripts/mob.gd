@@ -1,7 +1,8 @@
 class_name Mob
 extends PathFollow2D
 
-signal Hit(damage: int)
+const Combat = preload("res://scripts/combat.gd")
+
 signal Killed(mob: Mob)
 signal Survived
 
@@ -30,11 +31,15 @@ func _process(delta):
 			queue_free()
 
 
-func _on_hit(damage):
-	if dead or not has_entered:
-		return
-	health -= damage
-	$Health.scale.y = health / HP
-	if health <= 0:
+func resolve_damage(cp: Combat.Package) -> Combat.DamageResult:
+	assert(not dead, "Already dead")
+	assert(has_entered, "Hasn't entered map")
+	var reduction = 0.0
+	var taken = cp.effect.roll  # reduced by armor
+	self.health -= taken
+	self.dead = health <= 0
+	if dead:
 		Killed.emit(self)
-		dead = true
+	else:
+		$Health.scale.y = health / HP
+	return Combat.DamageResult.new(cp, taken, reduction, not dead)

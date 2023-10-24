@@ -3,24 +3,26 @@ extends Node2D
 
 @export var SPAWN_DELAY = 0.3
 
+signal NewTower(tower: Tower)
+
 const gnome = preload("res://scenes/mob.tscn")
 const tower_1 = preload("res://scenes/tower.tscn")
 const Utils = preload("res://scripts/utils.gd")
 const States = Utils.States
 const GRID_SIZE = Utils.GRID_SIZE
 
-@onready var path = $Monsters/Path2D
+@onready var gm: CombatManager = $CombatManager
+@onready var path: Path2D = $Monsters/Path2D
 @onready var ui_lives = $UI/Control/HBoxContainer/Control/Lives
 @onready var ui_alive = $UI/Control/HBoxContainer/Control3/Alive
 @onready var ui_score = $UI/Control/HBoxContainer/Control4/Score
 @onready var ui_state = $UI/Control/HBoxContainer/StateControl/State
 
-@onready var viewport_size = get_viewport().size
-@onready var min_y:float = GRID_SIZE*2
-@onready var min_x:float = GRID_SIZE*2
-@onready var max_x:float = viewport_size.x - (GRID_SIZE * 3)
-@onready var max_y:float = viewport_size.y - (GRID_SIZE * 3)
-
+@onready var viewport_size: Vector2i = get_viewport().size
+@onready var min_y: float = GRID_SIZE*2
+@onready var min_x: float = GRID_SIZE*2
+@onready var max_x: float = viewport_size.x - (GRID_SIZE * 3)
+@onready var max_y: float = viewport_size.y - (GRID_SIZE * 3)
 
 var _state: States = States.BUILDING
 var _monsters_to_spawn = 10
@@ -33,6 +35,7 @@ var alive = 0
 var lives = 3
 var score = 0
 var selected_tower:Tower = null
+var purchased_tower: bool = false
 
 
 func _ready() -> void:
@@ -40,14 +43,14 @@ func _ready() -> void:
 	_map.resize(21)
 	for x in range(0, 21):
 		_map[x] = []
-		_map[x].resize(12)
+		_map[x].resize(16)
 		_map[x].fill(false)
-#	_map[0][3] = true
-#	_map[20][12] = true
+	_map[0][3] = true
+	_map[20][12] = true
 
 
 func is_grid_free(g:Vector2i) -> bool:
-	return self._map[g.x][g.y]
+	return not self._map[g.x][g.y]
 
 
 func state() -> States:
@@ -74,11 +77,12 @@ func _handle_purchasing():
 		return  # only buy one at a time
 	if Input.is_action_pressed("buy_tower_1"):
 		self.selected_tower = tower_1.instantiate()
+		self.selected_tower.Picked.connect(_handle_tower_picked_up)
+		self.selected_tower.Placed.connect(_handle_tower_placed)
+		# How to destroy if never placed?
 		
 	if self.selected_tower:
 		self.selected_tower.selected = true
-		self.selected_tower.Picked.connect(_handle_tower_picked_up)
-		self.selected_tower.Placed.connect(_handle_tower_placed)
 		$Towers.add_child(self.selected_tower)
 
 
@@ -88,11 +92,14 @@ func _handle_tower_picked_up(tower: Tower, coords: Vector2i):
 
 
 func _handle_tower_placed(tower: Tower, coords: Vector2i):
-	if not self._placed_towers.has(tower):
-		_placed_towers.append(tower)
-	
+#	if not self._placed_towers.has(tower):
+	if self.purchased_tower:
+		self._placed_towers.append(tower)
+		NewTower.emit(selected_tower)
+
 	self._map[coords.x][coords.y] = true
 	self.selected_tower = null
+	self.purchased_tower = false
 
 
 func _handle_next_wave():

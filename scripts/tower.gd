@@ -4,9 +4,6 @@ extends Node2D
 const Utils = preload("res://scripts/utils.gd")
 const Combat = preload("res://scripts/combat.gd")
 
-
-signal Attacked(cb: Combat.CombatPackage)
-signal Hit(cb: Compat.CombatPackage)  # different object, combat results?
 signal Picked(tower:Tower, coords: Vector2i)
 signal Placed(tower:Tower, coords: Vector2i)
 
@@ -17,6 +14,7 @@ signal Placed(tower:Tower, coords: Vector2i)
 const States = Utils.States
 
 @onready var game: Game = get_node("/root/Game")
+@onready var combat_manager: CombatManager = get_node("/root/Game/CombatManager")
 @onready var min_y = game.min_y
 @onready var min_x = game.min_x
 @onready var max_y = game.max_y
@@ -43,8 +41,9 @@ func _process(delta):
 	if since_lost_shot >= DELAY and enemies.size():
 		enemies.sort_custom(sort_enemies)
 		current_enemy = enemies[0]
-		if current_enemy.has_entered:
-			current_enemy.Hit.emit(DAMAGE)
+		if current_enemy.has_entered and not current_enemy.dead:  # this the best place for this?
+			var cb = Combat.create_default_damage_package(DAMAGE, current_enemy, self)
+			combat_manager.Attack.emit(cb)
 			since_lost_shot = 0.0
 
 	if current_enemy:
@@ -89,12 +88,6 @@ func _on_mob_entered(area2d: Area2D):
 	if mob is Mob:
 		enemies.append(mob)
 		enemies.sort_custom(sort_enemies)
-		mob.Killed.connect(_on_mob_killed)
-
-
-# get experience here
-func _on_mob_killed(_mob: Mob):
-	pass
 
 
 func _on_mob_exited(area2d: Area2D):
