@@ -26,11 +26,28 @@ var _state: States = States.BUILDING
 var _monsters_to_spawn = 10
 var _monster_count = 10
 var _since_spawn = SPAWN_DELAY
+var _placed_towers : Array[Tower] = []
+var _map: Array[Array]
 var wave = 1
 var alive = 0
 var lives = 3
 var score = 0
 var selected_tower:Tower = null
+
+
+func _ready() -> void:
+	self._map = []
+	for x in range(0, 15):
+		if not _map[x]:
+			_map.append([])
+		for y in range(0, 20):
+			_map[x].append(false)
+	_map[0][3] = true
+	_map[20][12] = true
+
+
+func is_grid_free(g:Vector2i) -> bool:
+	return self._map[g.x][g.y]
 
 
 func state() -> States:
@@ -65,11 +82,16 @@ func _handle_purchasing():
 		$Towers.add_child(self.selected_tower)
 
 
-func _handle_tower_picked_up(tower: Tower):
+func _handle_tower_picked_up(tower: Tower, coords: Vector2i):
 	self.selected_tower = tower
+	self._map[coords.x][coords.y] = false
 
 
-func _handle_tower_placed(_tower: Tower):
+func _handle_tower_placed(tower: Tower, coords: Vector2i):
+	if not self._placed_towers.has(tower):
+		_placed_towers.append(tower)
+	
+	self._map[coords.x][coords.y] = true
 	self.selected_tower = null
 
 
